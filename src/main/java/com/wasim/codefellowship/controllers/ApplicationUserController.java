@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
-
+import jakarta.servlet.ServletException;
 import java.time.LocalDate;
 
 @Controller
@@ -42,9 +42,10 @@ public class ApplicationUserController {
     }
     @PostMapping("/signup")
     public RedirectView postSignup(String username, String password, String firstName, String lastName, String bio, LocalDate dateOfBirth) {
+        ApplicationUser user = new ApplicationUser();
         user.setUsername(username);
-        user.setFirstname(firstName);
-        user.setLastname(lastName);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         user.setBio(bio);
 
         String encryptedPassword = passwordEncoder.encode(password);
