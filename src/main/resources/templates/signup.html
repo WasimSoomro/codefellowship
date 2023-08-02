@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -13,7 +13,9 @@
 <main class="container">
 
     <h1>Sign Up!</h1>
-    <form action="/signup" method="POST">
+    <h3 th:if="${username}" th:text="'Current User: ' + ${username}"></h3>
+
+    <form action="/index" method="POST">
         <label for="username">Username</label>
         <input type="text" name="username" id="username">
 
@@ -26,7 +28,7 @@
         <input type="text" name="lastname" id="lastname">
 
         <br>
-        <label for="bio">Lastname</label>
+        <label for="bio">Bio</label>
         <input type="text" name="bio" id="bio">
 
         <br>

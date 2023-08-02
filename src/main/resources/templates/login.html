@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -14,6 +14,8 @@
 
     <h1>Login</h1>
     <h2>(or sign up <a href="/signup">here</a>)</h2>
+    <h3 th:if="${username}" th:text="'Current User: ' + ${username}"></h3>
+
     <form action="/login" method="POST">
         <label for="username" id="username">Username</label>
         <input type="text" name="username">
