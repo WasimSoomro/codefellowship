@@ -1,10 +1,10 @@
-package com.Lab16.Lab16;
+package com.wasim.codefellowship;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class Lab16ApplicationTests {
+class CodeFellowshipApplicationTests {
 
 	@Test
 	void contextLoads() {
