@@ -51,13 +51,9 @@ public class ApplicationUser implements UserDetails {
     public void setBio(String bio) {
         this.bio = bio;
     }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
-
-
     String username;
     String password;
     String firstName;
