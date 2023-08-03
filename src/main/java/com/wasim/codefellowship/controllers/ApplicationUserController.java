@@ -48,7 +48,7 @@ public class ApplicationUserController {
     public String etPhoneHome() {
         return "index.html";
     }
-
+    
     @PostMapping("/signup")
     public RedirectView postSignup(String username, String password, String firstName, String lastName, String bio, LocalDate dateOfBirth) {
         ApplicationUser user = new ApplicationUser();
