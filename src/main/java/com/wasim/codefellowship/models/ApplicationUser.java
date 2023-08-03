@@ -12,6 +12,18 @@ import java.util.Collection;
 
 @Entity
 public class ApplicationUser implements UserDetails {
+
+    public ApplicationUser() {
+    }
+
+    public ApplicationUser(String username, String firstName, String lastName, LocalDate dateOfBirth, String bio) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dateOfBirth = dateOfBirth;
+        this.bio = bio;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }

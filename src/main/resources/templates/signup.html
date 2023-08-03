@@ -15,7 +15,7 @@
     <h1>Sign Up!</h1>
     <h3 th:if="${username}" th:text="'Current User: ' + ${username}"></h3>
 
-    <form action="/index" method="POST">
+    <form action="/signup" method="POST">
         <label for="username">Username</label>
         <input type="text" name="username" id="username">
 
@@ -37,7 +37,7 @@
 
         <br>
         <label for="dob">DOB</label>
-        <input type="integer" name="dob" id="dob">
+        <input type="date" name="dob" id="dob">
 
         <input type="submit" value="Sign Up">
     </form>

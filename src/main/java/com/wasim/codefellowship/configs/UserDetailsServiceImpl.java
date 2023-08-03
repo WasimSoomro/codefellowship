@@ -14,8 +14,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     ApplicationUserRepository applicationUserRepository;
 
+//    @Override
+//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+//        return applicationUserRepository.findByUsername(username);
+//    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return applicationUserRepository.findByUsername(username);
+        UserDetails user = applicationUserRepository.findByUsername(username);
+        return user;
     }
+
 }
