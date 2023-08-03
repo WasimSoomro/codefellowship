@@ -4,32 +4,31 @@ import com.wasim.codefellowship.models.ApplicationUser;
 import com.wasim.codefellowship.repositories.ApplicationUserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 import jakarta.servlet.ServletException;
-
 import java.security.Principal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Controller
 public class ApplicationUserController {
     @Autowired
-    private ApplicationUserRepository applicationUserRepository;
+    ApplicationUserRepository applicationUserRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
-    private HttpServletRequest request;
+    HttpServletRequest request;
 
-//    @GetMapping("/login")
-//    public String getLoginPage() {
-//        return "login.html";
-//    }
+    public ApplicationUserController() {
+    }
 
     @GetMapping("/login")
     public String getLoginPage(Model m, Principal p) {
@@ -45,18 +44,80 @@ public class ApplicationUserController {
     }
 
     @GetMapping("/")
-    public String etPhoneHome() {
+    public String getIndexPage(Model m, Principal p) {
+
+        System.out.println("Principal " + p);
+
+        if (p != null) {
+            String username = p.getName();
+            ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+
+            m.addAttribute("username", username);
+            // m.addAttribute("nickname", applicationUser.getNickname());
+        } else {
+            throw new ResourceNotFoundException("It's a 404");
+        }
+
         return "index.html";
     }
-    
+
+@ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public class ResourceNotFoundException extends RuntimeException {
+        ResourceNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    @GetMapping ("/test")
+    public String getTestPage(Principal p, Model m) {
+        if(p != null) {
+            String username = p.getName();
+            ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+
+            m.addAttribute("username", username);
+//            m.addAttribute("firstname", applicationUserUser.getFirstName());
+        }
+
+        return "test.html";
+    }
+
+    @GetMapping("/users/{id}")
+    public String getUserInfo(Model m, Principal p, @PathVariable Long id) {
+        if (p != null)  // not strictly required if your WebSecurityConfig is correct
+        {
+            String username = p.getName();
+            ApplicationUser applicationBrowsingUser = applicationUserRepository.findByUsername(username);
+
+            m.addAttribute("browsingUserUsername", username);
+//            m.addAttribute("browsingUserNickname", applicationBrowsingUser.getNickname());
+        }
+
+        ApplicationUser applicationUser = applicationUserRepository.findById(id).orElseThrow();
+        m.addAttribute("applicationUserUsername", applicationUser.getUsername());
+//        m.addAttribute("applicationUserNickname", applicationUser.getNickname());
+//        m.addAttribute("applicationUserId", applicationUser.getId());
+
+        m.addAttribute("testDate", LocalDateTime.now());
+
+        return "user-info.html";
+    }
+
+    @PutMapping("/users/{id}")
+    public RedirectView edituserInfo(Model m, Principal p, @PathVariable Long id, String username, RedirectAttributes redir) {
+
+        if(p != null && (p.getName().equals(username))) {
+            ApplicationUser applicationUser = applicationUserRepository.findById(id).orElseThrow();
+            applicationUser.setUsername(username);
+            applicationUserRepository.save(applicationUser);
+        } else {
+            redir.addFlashAttribute("errorMessage", "Cannot edit another user's page!");
+        }
+        return new RedirectView("users/" + id);
+    }
+
     @PostMapping("/signup")
-    public RedirectView postSignup(String username, String password, String firstName, String lastName, String bio, LocalDate dateOfBirth) {
-        ApplicationUser user = new ApplicationUser();
-        user.setUsername(username);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setBio(bio);
-        user.setDateOfBirth(dateOfBirth);
+    public RedirectView postSignup(String username, String password, String firstName, String lastName, LocalDate dateOfBirth, String bio) {
+        ApplicationUser user = new ApplicationUser(username, firstName, lastName, dateOfBirth, bio);
         String encryptedPassword = passwordEncoder.encode(password);
         user.setPassword(encryptedPassword);
         applicationUserRepository.save(user);
