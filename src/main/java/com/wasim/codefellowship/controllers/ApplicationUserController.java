@@ -15,6 +15,8 @@ import jakarta.servlet.ServletException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 @Controller
 public class ApplicationUserController {
@@ -94,10 +96,12 @@ public class ApplicationUserController {
 
         ApplicationUser applicationUser = applicationUserRepository.findById(id).orElseThrow();
         m.addAttribute("applicationUserUsername", applicationUser.getUsername());
+        m.addAttribute("applicationUserId", applicationUser.getId());
 //        m.addAttribute("applicationUserNickname", applicationUser.getNickname());
-//        m.addAttribute("applicationUserId", applicationUser.getId());
 
         m.addAttribute("testDate", LocalDateTime.now());
+
+
 
         return "user-info.html";
     }
@@ -114,6 +118,23 @@ public class ApplicationUserController {
         }
         return new RedirectView("users/" + id);
     }
+
+    @PutMapping("/followUser/{id}")
+    public RedirectView followUser(Principal p, @PathVariable Long id) {
+    ApplicationUser userToFollow = applicationUserRepository.findById(id).orElseThrow();
+    ApplicationUser browsingUser = applicationUserRepository.findByUsername(p.getName());
+
+        Set<ApplicationUser> usersIFollow = browsingUser.getUsersIFollow();
+        if(usersIFollow.contains(userToFollow)){
+            usersIFollow.remove(userToFollow);
+        } else {
+            browsingUser.getUsersIFollow().add(userToFollow);
+        }
+
+        applicationUserRepository.save(browsingUser);
+        return new RedirectView(("users/" + id));
+    }
+
 
     @PostMapping("/signup")
     public RedirectView postSignup(String username, String password, String firstName, String lastName, LocalDate dateOfBirth, String bio) {
@@ -137,5 +158,17 @@ public class ApplicationUserController {
         }
     }
 
+    @GetMapping("/allUsers")
+    public String getUserInfo(Model m, Principal p) {
+
+        if (p != null) {
+            String username = p.getName();
+            m.addAttribute("username", username);
+        }
+
+        List<ApplicationUser> allUsers = applicationUserRepository.findAll();
+        m.addAttribute("allUsers", allUsers);
+        return "all-users.html";
+    }
 }
 

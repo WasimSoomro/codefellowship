@@ -14,12 +14,23 @@ Error Fragment: fragment displayed when an authorized action is taken by a user 
 
 <h1 th:text="${'User info for user id: ' + applicationUserId}"></h1>
 
-<form th:action="${'/users/' + dinoUserId}" th:method="PUT">
+<form th:action="${'/users/' + applicationUserId}" th:method="PUT">
   <label for="username">Username</label>
   <input th:value="${applicationUserUsername}" type="text" name="username" id="username" th:disabled="${!browsingUserUsername.equals(applicationUserUsername)}">
 <!--  <label for="nickname">Nickname</label>-->
 <!--  <input th:value="${applicationUserNickname}" type="text" name="nickname" id="nickname" th:disabled="${!browsingUserUsername.equals(applicationUserUsername)}">-->
   <input type="submit" value="Edit User Info" th:hidden="${!browsingUserUsername.equals(applicationUserUsername)}">
+</form>
+
+<!--<form th:action="${'/followUser/' + applicationUserId}" th:method="PUT">-->
+<!--  <label for="username">Username</label>-->
+<!--  <input th:value="${applicationUserUsername}" type="text" name="username" id="username" th:disabled="${!browsingUserUsername.equals(applicationUserUsername)}">-->
+<!--  <input type="submit" value="Edit User Info" th:hidden="${!browsingUserUsername.equals(applicationUserUsername)}">-->
+<!--</form>-->
+
+<form th:action="@{'/followUser/' + ${applicationUserId}}" th:method="PUT">
+  <input type="hidden" name="username" th:value="${applicationUserUsername}">
+  <button type="submit" th:disabled="${browsingUserUsername.equals(applicationUserUsername)}">Follow</button>
 </form>
 
 <div th:text="${'testDate: ' + #temporals.format(testDate, 'yyyy-MM-dd HH:mm:ss')}"></div>

@@ -7,6 +7,8 @@
 
 </head>
 <body>
+<div th:replace="fragments/nav-header"></div>
+
 <main class="container">
 
   <h3 th:if="${username != null}" th:text="${'Current user: ' + username}"></h3>
