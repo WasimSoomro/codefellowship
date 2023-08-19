@@ -1,17 +1,62 @@
 package com.wasim.codefellowship.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class ApplicationUser implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
+    String username;
+    String password;
+    String firstName;
+    String lastName;
+    LocalDate dateOfBirth;
+    String bio;
+
+    @ManyToMany
+    @JoinTable(
+    name= "followers_to_followees",
+            joinColumns = {@JoinColumn(name="userWhoIsFollowing")},
+            inverseJoinColumns = {@JoinColumn(name="FollowedUser")})
+    Set<ApplicationUser> usersIFollow = new HashSet<>();
+
+    @ManyToMany(
+            mappedBy = "usersIFollow"
+    )
+    Set<ApplicationUser> usersWhoFollowMe = new HashSet<>();
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Set<ApplicationUser> getUsersIFollow() {
+        return usersIFollow;
+    }
+
+    public void setUsersIFollow(Set<ApplicationUser> usersIFollow) {
+        this.usersIFollow = usersIFollow;
+    }
+
+    public Set<ApplicationUser> getUsersWhoFollowMe() {
+        return usersWhoFollowMe;
+    }
+
+    public void setUsersWhoFollowMe(Set<ApplicationUser> usersWhoFollowMe) {
+        this.usersWhoFollowMe = usersWhoFollowMe;
+    }
 
     public ApplicationUser() {
     }
@@ -63,15 +108,6 @@ public class ApplicationUser implements UserDetails {
     public void setBio(String bio) {
         this.bio = bio;
     }
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String username;
-    String password;
-    String firstName;
-    String lastName;
-    LocalDate dateOfBirth;
-    String bio;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
